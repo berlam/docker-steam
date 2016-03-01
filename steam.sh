@@ -1,14 +1,28 @@
 #!/bin/sh
-xhost local:root
-docker run --rm --name="steam" \
-	-v /etc/machine-id:/etc/machine-id:ro \
-	-v /var/run/dbus:/var/run/dbus:rw \
-	-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-	-v "$HOME/steam:/home/steam" \
-	-e DISPLAY=unix${DISPLAY} \
-	--device /dev/dri/card0 \
-	--device /dev/snd:/dev/snd \
-	--ipc="host" \
-	--net="host" \
-	--privileged=true \
-	tianon/steam
+GENERAL="
+-v /etc/localtime:/etc/localtime:ro \
+-v /etc/machine-id:/etc/machine-id:ro \
+--ipc='host' \
+--net='host' \
+"
+STORAGE="
+-v $HOME/steam:/home/steam \
+"
+GRAPHIC="
+-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+-v /etc/group:/etc/group:ro \
+-v /etc/passwd:/etc/passwd:ro \
+-v /etc/shadow:/etc/shadow:ro \
+-v /etc/sudoers.d:/etc/sudoers.d:ro \
+-e DISPLAY=$DISPLAY \
+--user=$USER \
+$(find /dev/dri/ -type c | sed 's/^/--device /') \
+"
+SOUND="
+-v /etc/asound.conf:/etc/asound.conf \
+$(find /dev/snd/ -type c | sed 's/^/--device /') \
+"
+docker pull tianon/steam
+docker run --rm --security-opt=seccomp:unconfined --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND tianon/steam
+#docker run --rm --security-opt=seccomp:seccomp.json -it --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND tianon/steam /bin/bash
+#docker run --rm -it --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND tianon/steam /bin/bash
