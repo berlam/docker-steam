@@ -22,7 +22,6 @@ SOUND="
 -v /etc/asound.conf:/etc/asound.conf \
 $(find /dev/snd/ -type c | sed 's/^/--device /') \
 "
-docker pull tianon/steam
-docker run --rm --security-opt=seccomp:unconfined --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND tianon/steam
+docker run --rm --security-opt=seccomp:unconfined --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND berla/steam
 #docker run --rm --security-opt=seccomp:seccomp.json -it --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND tianon/steam /bin/bash
 #docker run --rm -it --name="steam" $GENERAL $STORAGE $GRAPHIC $SOUND tianon/steam /bin/bash
