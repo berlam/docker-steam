@@ -15,7 +15,7 @@ GRAPHIC="
 -v /etc/shadow:/etc/shadow:ro \
 -v /etc/sudoers.d:/etc/sudoers.d:ro \
 -e DISPLAY=$DISPLAY \
---user=$USER \
+--user=$(id -u) \
 $(find /dev/dri/ -type c | sed 's/^/--device /') \
 "
 SOUND="
